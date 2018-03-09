@@ -1,6 +1,7 @@
 package br.com.vivere.app;
 
 import java.io.File;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,7 +21,9 @@ import org.w3c.dom.NodeList;
 import br.com.vivere.enums.TipoDados;
 
 public class ValidationsXmlTags {
-
+	
+	//Map<String, Integer> left = ImmutableMap.of("a", 1, "b", 2, "c", 3);
+	
 	/**
 	 * @param args
 	 * @throws Exception
@@ -191,6 +194,12 @@ public class ValidationsXmlTags {
 				}
 				
 			}
+			
+			//Alterando os nomes funcionais
+			NamedNodeMap attrClass = classElement.getAttributes();
+			Node attrName = attrClass.getNamedItem("name");
+			String nomeTabela = arquivoHbm.getName().replace(".hbm.xml", "");
+			attrName.getTextContent();
 			
 			//Escreve
 			doc.getDocumentElement().normalize();
