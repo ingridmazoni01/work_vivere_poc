@@ -17,4 +17,18 @@ public abstract class PropertiesReader {
 		
 	}
 	
+	public static Properties getFuncionalProp() {
+		Properties prop = new Properties();
+		
+		try {
+			InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream("nomes-funcionais.properties");
+			prop.load(inputStream);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return prop;
+	}
+	
 }
