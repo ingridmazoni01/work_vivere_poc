@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import br.com.vivere.enums.TipoDados;
+import br.com.vivere.util.PropertiesReader;
 
 @SuppressWarnings("serial")
 public class ValidationsXmlTags {
@@ -369,7 +370,7 @@ public class ValidationsXmlTags {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		String diretorio = "C:\\Users\\silvio.angelo\\Downloads\\hbm automatizar";
+		String diretorio = PropertiesReader.getValor("diretorio.hbm");
 
 		File file = new File(diretorio);
 		File arquivos[] = file.listFiles();
