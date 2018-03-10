@@ -550,7 +550,7 @@ public class ValidationsXmlTags {
 				NamedNodeMap manyToOneAttMap = manyToOneElement.getAttributes();
 				Node attrClas = manyToOneAttMap.getNamedItem("class");
 				String nomeTabelaHbmManyToOne = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
-				String nomeFuncionalManyToOne = attrName.getTextContent().replace(nomeTabelaHbmManyToOne, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmManyToOne));
+				String nomeFuncionalManyToOne = attrClas.getTextContent().replace(nomeTabelaHbmManyToOne, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmManyToOne));
 				attrClas.setTextContent(nomeFuncionalManyToOne);
 			}
 			
@@ -563,7 +563,7 @@ public class ValidationsXmlTags {
 				NamedNodeMap oneToManyAttMap = oneToManyElement.getAttributes();
 				Node attrClas = oneToManyAttMap.getNamedItem("class");
 				String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
-				String nomeFuncionaloneToMany = attrName.getTextContent().replace(nomeTabelaHbmoneToMany, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
+				String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
 				attrClas.setTextContent(nomeFuncionaloneToMany);
 			}
 			
