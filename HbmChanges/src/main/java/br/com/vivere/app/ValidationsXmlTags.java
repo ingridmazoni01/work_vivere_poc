@@ -1,7 +1,10 @@
 package br.com.vivere.app;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -216,30 +219,10 @@ public class ValidationsXmlTags {
 			String nomeFuncional = attrName.getTextContent().replace(nomeTabelaHbm, "domain."+nomesFuncionaisMap.get(nomeTabelaHbm));
 			attrName.setTextContent(nomeFuncional);
 			
-			NodeList manyToOneList = doc.getElementsByTagName("many-to-one");
+			List<String>relationshipList = new ArrayList<String>(Arrays.asList("one-to-one","one-to-many","many-to-one","many-to-many")); 
 			
-			for (int i = 0; i < manyToOneList.getLength(); i++) {
-				
-				Node manyToOneElement =  manyToOneList.item(i);
-				
-				NamedNodeMap manyToOneAttMap = manyToOneElement.getAttributes();
-				Node attrClas = manyToOneAttMap.getNamedItem("class");
-				String nomeTabelaHbmManyToOne = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
-				String nomeFuncionalManyToOne = attrClas.getTextContent().replace(nomeTabelaHbmManyToOne, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmManyToOne));
-				attrClas.setTextContent(nomeFuncionalManyToOne);
-			}
-			
-			NodeList oneToManyList = doc.getElementsByTagName("one-to-many");
-			
-			for (int i = 0; i < oneToManyList.getLength(); i++) {
-				
-				Node oneToManyElement =  oneToManyList.item(i);
-				
-				NamedNodeMap oneToManyAttMap = oneToManyElement.getAttributes();
-				Node attrClas = oneToManyAttMap.getNamedItem("class");
-				String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
-				String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
-				attrClas.setTextContent(nomeFuncionaloneToMany);
+			for (String relationship : relationshipList) {
+				alteracaoNomesFuncionaisRelacionamentosEntidades(doc, relationship);
 			}
 			
 			//Escreve
@@ -257,5 +240,22 @@ public class ValidationsXmlTags {
 		System.out.println("Atualização de Todos HBMs realizado com sucesso.");
 		
 	}//fim do metodo main
+	
+	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship) {
+		
+		NodeList relationshipList = doc.getElementsByTagName(relationship);
+		
+		for (int i = 0; i < relationshipList.getLength(); i++) {
+			
+			Node relationshipElement =  relationshipList.item(i);
+			
+			NamedNodeMap relationshipMap = relationshipElement.getAttributes();
+			Node attrClas = relationshipMap.getNamedItem("class");
+			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
+			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
+			attrClas.setTextContent(nomeFuncionaloneToMany);
+		}
+		
+	}
 
 }//fim da classe
