@@ -69,15 +69,9 @@ public class ValidationsXmlTags {
 			NodeList elementList = doc.getElementsByTagName("class");
 			Node classElement 	 =  elementList.item(0);
 			
-			inserirTagAuditoria(doc, classElement);
+			inserirTags(doc, classElement, arquivoHbm);
 			
-			inserirTagsChaveSimples(doc, classElement);
-			
-			inserirTagsChaveComposta(doc, classElement, arquivoHbm);
-			
-			validacaoTipagemPropriedades(doc);
-			
-			validacaoNomesFuncionaisEntidades(doc, classElement,arquivoHbm);
+			realizarValidacoes(doc, classElement, arquivoHbm);
 			
 			escreverArquivoHBM(doc, classElement, arquivoHbm);
 			
@@ -86,6 +80,24 @@ public class ValidationsXmlTags {
 		System.out.println("Atualização de Todos HBMs realizado com sucesso.");
 		
 	}//fim do metodo main
+	
+	private static void inserirTags(Document doc,Node classElement, File arquivoHbm) {
+		
+		inserirTagAuditoria(doc, classElement);
+		
+		inserirTagsChaveSimples(doc, classElement);
+		
+		inserirTagsChaveComposta(doc, classElement, arquivoHbm);
+		
+	}
+	
+	private static void realizarValidacoes(Document doc,Node classElement, File arquivoHbm) {
+		
+		validacaoTipagemPropriedades(doc);
+		
+		validacaoNomesFuncionaisEntidades(doc, classElement,arquivoHbm);
+		
+	}
 	
 	private static void inserirTagAuditoria(Document doc,Node classElement) {
 		
