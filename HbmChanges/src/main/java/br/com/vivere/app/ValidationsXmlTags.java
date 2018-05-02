@@ -41,6 +41,12 @@ public class ValidationsXmlTags {
 
 	}};
 	
+	private static List<String> listaEntidadesSemSequence = new ArrayList<String>(
+			Arrays.asList(
+					"TBG_BANCOS","TBG_LOJA"
+			)
+	);
+	
 	/**
 	 * @param args
 	 * @throws Exception
@@ -160,6 +166,13 @@ public class ValidationsXmlTags {
 					
 					if(childElement.getNodeName().equals("generator")) {
 						
+						NamedNodeMap attrClass = classElement.getAttributes();
+						Node attrTable = attrClass.getNamedItem("table");
+						
+						if(listaEntidadesSemSequence.contains(attrTable.getTextContent())) {
+							continue;
+						}
+						
 						Element generatorSequenceElement = doc.createElement("generator");
 						Attr attClass = doc.createAttribute("class");
 						attClass.setValue("org.hibernate.id.enhanced.SequenceStyleGenerator");
@@ -179,8 +192,6 @@ public class ValidationsXmlTags {
 						incSizeParamElement.setAttributeNode(attIncSizeName);
 						generatorSequenceElement.appendChild(incSizeParamElement);
 						
-						NamedNodeMap attrClass = classElement.getAttributes();
-						Node attrTable = attrClass.getNamedItem("table");
 						Element seqNameParamElement = doc.createElement("param");
 						seqNameParamElement.setTextContent("SEQ_"+attrTable.getTextContent());
 						Attr seqNameSizeName = doc.createAttribute("name");
