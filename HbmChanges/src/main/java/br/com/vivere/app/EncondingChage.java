@@ -11,6 +11,12 @@ public class EncondingChage {
 	
 	public static void main(String[] args) throws IOException {
 		
+		change();
+		
+    }
+	
+	public static void change() throws IOException {
+		
 		String diretorio = PropertiesReader.getValor("diretorio.hbm");
 		
 		File file = new File(diretorio);
@@ -26,6 +32,8 @@ public class EncondingChage {
 	        System.out.println("Enconding Feito: "+(i+1));
 		}
 		
-    }
+		System.out.println("Enconding de Todos HBMs realizado com sucesso.");
+		
+	}
 
 }

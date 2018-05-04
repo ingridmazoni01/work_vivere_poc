@@ -24,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import br.com.vivere.enums.TipoDados;
+import br.com.vivere.exception.NomeFuncionalException;
 import br.com.vivere.util.PropertiesReader;
 
 @SuppressWarnings("serial")
@@ -47,11 +48,19 @@ public class ValidationsXmlTags {
 			)
 	);
 	
+	private static List<String> listaEntidadesSemTagAuditoria = new ArrayList<String>(
+			Arrays.asList(
+					"PRT","CNT","VW"
+			)
+	);
+	
 	/**
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		
+		EncondingChage.change();
 		
 		String diretorio = PropertiesReader.getValor("diretorio.hbm");
 
@@ -97,7 +106,7 @@ public class ValidationsXmlTags {
 		
 	}
 	
-	private static void realizarValidacoes(Document doc,Node classElement, File arquivoHbm) {
+	private static void realizarValidacoes(Document doc,Node classElement, File arquivoHbm) throws NomeFuncionalException {
 		
 		validacaoTipagemPropriedades(doc);
 		
@@ -107,17 +116,25 @@ public class ValidationsXmlTags {
 	
 	private static void inserirTagAuditoria(Document doc,Node classElement) {
 		
-		NodeList commentList = doc.getElementsByTagName("comment");
-		Node commentElement =  commentList.item(0);
-		Element metaNode = doc.createElement("meta");
-		metaNode.setTextContent("com.viverebrasil.contextaware.audittracking.IAuditable");
-		Attr attAttribute = doc.createAttribute("attribute");
-		attAttribute.setValue("implements");
-		metaNode.setAttributeNode(attAttribute);
-		Attr attInherit = doc.createAttribute("inherit");
-		attInherit.setValue("false");
-		metaNode.setAttributeNode(attInherit);
-		classElement.insertBefore(metaNode, commentElement);
+		NamedNodeMap attrClass = classElement.getAttributes();
+		Node attrTable = attrClass.getNamedItem("table");
+		
+		if(!listaEntidadesSemTagAuditoria.contains(attrTable.getTextContent().substring(0, 3))) {
+			
+			NodeList commentList = doc.getElementsByTagName("comment");
+			Node commentElement =  commentList.item(0);
+			Element metaNode = doc.createElement("meta");
+			metaNode.setTextContent("com.viverebrasil.contextaware.audittracking.IAuditable");
+			Attr attAttribute = doc.createAttribute("attribute");
+			attAttribute.setValue("implements");
+			metaNode.setAttributeNode(attAttribute);
+			Attr attInherit = doc.createAttribute("inherit");
+			attInherit.setValue("false");
+			metaNode.setAttributeNode(attInherit);
+			classElement.insertBefore(metaNode, commentElement);
+			
+		}
+		
 		
 	}//fim do metodo inserirTagAuditoria
 	
@@ -273,12 +290,17 @@ public class ValidationsXmlTags {
 		
 	}//fim do metodo validacaoTipagemPropriedades
 	
-	private static void validacaoNomesFuncionaisEntidades(Document doc,Node classElement, File arquivoHbm) {
+	private static void validacaoNomesFuncionaisEntidades(Document doc,Node classElement, File arquivoHbm) throws NomeFuncionalException {
 		
 		//Alterando os nomes funcionais
 		NamedNodeMap attrClass = classElement.getAttributes();
 		Node attrName = attrClass.getNamedItem("name");
 		String nomeTabelaHbm = arquivoHbm.getName().replace(".hbm.xml", "");
+		
+		if(nomesFuncionaisMap.get(nomeTabelaHbm) == null) {
+			throw new NomeFuncionalException("Parametro no arquivo properties para a tabela "+ nomeTabelaHbm + " nao encontrado.");
+		}
+		
 		String nomeFuncional = attrName.getTextContent().replace(nomeTabelaHbm, "domain."+nomesFuncionaisMap.get(nomeTabelaHbm));
 		attrName.setTextContent(nomeFuncional);
 		
@@ -290,7 +312,7 @@ public class ValidationsXmlTags {
 		
 	}//fim do metodo validacaoNomesFuncionaisEntidades
 	
-	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship) {
+	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship) throws NomeFuncionalException {
 		
 		NodeList relationshipList = doc.getElementsByTagName(relationship);
 		
@@ -300,7 +322,13 @@ public class ValidationsXmlTags {
 			
 			NamedNodeMap relationshipMap = relationshipElement.getAttributes();
 			Node attrClas = relationshipMap.getNamedItem("class");
-			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.parametrizador.")[1];
+			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
+			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".")+1, nomeTabelaHbmoneToMany.length());
+			
+			if(nomesFuncionaisMap.get(nomeTabelaHbmoneToMany) == null) {
+				throw new NomeFuncionalException("Parametro no arquivo properties para a tabela "+ nomeTabelaHbmoneToMany + " nao encontrado.");
+			}
+			
 			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain."+nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
 			attrClas.setTextContent(nomeFuncionaloneToMany);
 		}
