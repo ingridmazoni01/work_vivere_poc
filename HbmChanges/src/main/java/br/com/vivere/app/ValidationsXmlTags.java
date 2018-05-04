@@ -44,7 +44,7 @@ public class ValidationsXmlTags {
 	
 	private static List<String> listaEntidadesSemSequence = new ArrayList<String>(
 			Arrays.asList(
-					"TBG_BANCOS","TBG_LOJA","ADM_MENU","SIS_COLUNAS"
+					"TBG_BANCOS","TBG_LOJA","ADM_MENU","SIS_COLUNAS","PRT_EXCEC_PROCESSA"
 			)
 	);
 	
