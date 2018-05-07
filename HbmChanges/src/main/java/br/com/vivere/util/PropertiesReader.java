@@ -6,14 +6,20 @@ import java.util.Properties;
 
 public abstract class PropertiesReader {
 	
-	public static String getValor(String chave) throws IOException {
+	public static String getValor(String chave) {
 		
-		InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream("hbm-changes.properties");
-	      
-		Properties prop = new Properties();
-		prop.load(inputStream);
+		try {
+			InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream("hbm-changes.properties");
+			  
+			Properties prop = new Properties();
+			prop.load(inputStream);
+			
+			return prop.getProperty(chave);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		return prop.getProperty(chave);
+		return null;
 		
 	}
 	
