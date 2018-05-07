@@ -28,7 +28,7 @@ import br.com.vivere.exception.NomeFuncionalException;
 import br.com.vivere.util.PropertiesReader;
 
 @SuppressWarnings("serial")
-public class ValidationsXmlTags {
+public abstract class ValidationsXmlTags {
 
 	private static HashMap<String, String> nomesFuncionaisMap = new HashMap<String, String>() {
 		{

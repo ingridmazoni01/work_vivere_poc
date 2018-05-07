@@ -7,13 +7,7 @@ import org.apache.commons.io.FileUtils;
 
 import br.com.vivere.util.PropertiesReader;
 
-public class EncondingChage {
-	
-	public static void main(String[] args) throws IOException {
-		
-		change();
-		
-    }
+public abstract class EncondingChage {
 	
 	public static void change() throws IOException {
 		
