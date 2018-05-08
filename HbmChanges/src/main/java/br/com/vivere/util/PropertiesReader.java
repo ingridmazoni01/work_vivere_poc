@@ -23,6 +23,30 @@ public abstract class PropertiesReader {
 		
 	}
 	
+	public static String getValor(String ...chaves) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream("hbm-changes.properties");
+			  
+			Properties prop = new Properties();
+			prop.load(inputStream);
+			
+			for (String chave : chaves) {
+				sb.append(prop.getProperty(chave));
+				sb.append(",");
+			}
+			
+			return sb.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
+	
 	public static Properties getFuncionalProp() {
 		Properties prop = new Properties();
 		

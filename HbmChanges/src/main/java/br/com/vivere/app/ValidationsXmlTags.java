@@ -44,7 +44,10 @@ public abstract class ValidationsXmlTags {
 	};
 
 	private static List<String> listaEntidadesSemSequence = new ArrayList<String>(
-			Arrays.asList(PropertiesReader.getValor("entidades.sem.sequence").split(","))
+			Arrays.asList(
+					PropertiesReader.getValor("entidades.sem.sequence.pr3").split(",")					
+			)
+			
 	);
 
 	private static List<String> listaEntidadesSemTagAuditoria = new ArrayList<String>(
