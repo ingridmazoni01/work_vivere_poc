@@ -328,8 +328,8 @@ public abstract class ValidationsXmlTags {
 	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship,Node classElement)
 			throws NomeFuncionalException {
 
-		NamedNodeMap attrClass = classElement.getAttributes();
-		Node attrTable = attrClass.getNamedItem("table");
+		//NamedNodeMap attrClass = classElement.getAttributes();
+		//Node attrTable = attrClass.getNamedItem("table");
 		
 		NodeList relationshipList = doc.getElementsByTagName(relationship);
 
@@ -338,17 +338,21 @@ public abstract class ValidationsXmlTags {
 			Node relationshipElement = relationshipList.item(i);
 
 			NamedNodeMap relationshipMap = relationshipElement.getAttributes();
+			
+			Node attrEmbed = relationshipMap.getNamedItem("embed-xml");
+			attrEmbed.setTextContent("false");
+			
 			Node attrClas = relationshipMap.getNamedItem("class");
 			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1, nomeTabelaHbmoneToMany.length());
 			
-			if (listaInicioEntidadesParametrizador.contains(attrTable.getTextContent().substring(0, 3))) {
+			/*if (listaInicioEntidadesParametrizador.contains(attrTable.getTextContent().substring(0, 3))) {
 				
 				String nomeTabela = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 				String nomePacote = nomeTabela.substring(0,nomeTabela.indexOf("."));
 				attrClas.setTextContent(attrClas.getTextContent().replace(nomePacote, "parametrizador"));
 				
-			}
+			}*/
 
 			if (nomesFuncionaisMap.get(nomeTabelaHbmoneToMany) == null) {
 				throw new NomeFuncionalException(
