@@ -53,6 +53,10 @@ public abstract class ValidationsXmlTags {
 	private static List<String> listaEntidadesSemTagAuditoria = new ArrayList<String>(
 			Arrays.asList(PropertiesReader.getValor("entidades.sem.tag.auditoria").split(","))
 	);
+	
+	private static List<String> listaInicioEntidadesParametrizador = new ArrayList<String>(
+			Arrays.asList(PropertiesReader.getValor("entidades.parametrizador").split(","))
+	);
 
 	/**
 	 * @param args
@@ -316,14 +320,17 @@ public abstract class ValidationsXmlTags {
 				Arrays.asList("one-to-one", "one-to-many", "many-to-one", "many-to-many"));
 
 		for (String relationship : relationshipList) {
-			alteracaoNomesFuncionaisRelacionamentosEntidades(doc, relationship);
+			alteracaoNomesFuncionaisRelacionamentosEntidades(doc, relationship, classElement);
 		}
 
 	}// fim do metodo validacaoNomesFuncionaisEntidades
 
-	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship)
+	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship,Node classElement)
 			throws NomeFuncionalException {
 
+		NamedNodeMap attrClass = classElement.getAttributes();
+		Node attrTable = attrClass.getNamedItem("table");
+		
 		NodeList relationshipList = doc.getElementsByTagName(relationship);
 
 		for (int i = 0; i < relationshipList.getLength(); i++) {
@@ -333,16 +340,22 @@ public abstract class ValidationsXmlTags {
 			NamedNodeMap relationshipMap = relationshipElement.getAttributes();
 			Node attrClas = relationshipMap.getNamedItem("class");
 			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
-			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1,
-					nomeTabelaHbmoneToMany.length());
+			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1, nomeTabelaHbmoneToMany.length());
+			
+			if (listaInicioEntidadesParametrizador.contains(attrTable.getTextContent().substring(0, 3))) {
+				
+				String nomeTabela = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
+				String nomePacote = nomeTabela.substring(0,nomeTabela.indexOf("."));
+				attrClas.setTextContent(attrClas.getTextContent().replace(nomePacote, "parametrizador"));
+				
+			}
 
 			if (nomesFuncionaisMap.get(nomeTabelaHbmoneToMany) == null) {
 				throw new NomeFuncionalException(
 						"Parametro no arquivo properties para a tabela " + nomeTabelaHbmoneToMany + " nao encontrado.");
 			}
 
-			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany,
-					"domain." + nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
+			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain." + nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
 			attrClas.setTextContent(nomeFuncionaloneToMany);
 		}
 
