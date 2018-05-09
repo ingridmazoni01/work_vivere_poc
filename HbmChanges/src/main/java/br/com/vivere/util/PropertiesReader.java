@@ -47,11 +47,11 @@ public abstract class PropertiesReader {
 		
 	}
 	
-	public static Properties getFuncionalProp() {
+	public static Properties getFuncionalProp(String parametro) {
 		Properties prop = new Properties();
 		
 		try {
-			InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream("nomes-funcionais.properties");
+			InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(parametro);
 			prop.load(inputStream);
 			
 		} catch (IOException e) {

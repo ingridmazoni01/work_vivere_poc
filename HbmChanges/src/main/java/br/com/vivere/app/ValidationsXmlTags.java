@@ -30,10 +30,23 @@ import br.com.vivere.util.PropertiesReader;
 @SuppressWarnings("serial")
 public abstract class ValidationsXmlTags {
 
-	private static HashMap<String, String> nomesFuncionaisMap = new HashMap<String, String>() {
+	private static HashMap<String, String> nomesFuncionaisGeralMap = new HashMap<String, String>() {
 		{
 
-			Properties nomesFuncionaisProp = PropertiesReader.getFuncionalProp();
+			Properties nomesFuncionaisProp = PropertiesReader.getFuncionalProp("nomes-funcionais.properties");
+			Set<String> keys = nomesFuncionaisProp.stringPropertyNames();
+
+			for (String key : keys) {
+				put(key, nomesFuncionaisProp.getProperty(key));
+			}
+
+		}
+	};
+	
+	private static HashMap<String, String> nomesFuncionaisParametrizadorMap = new HashMap<String, String>() {
+		{
+
+			Properties nomesFuncionaisProp = PropertiesReader.getFuncionalProp("nomes-funcionais-parametrizador.properties");
 			Set<String> keys = nomesFuncionaisProp.stringPropertyNames();
 
 			for (String key : keys) {
@@ -54,10 +67,6 @@ public abstract class ValidationsXmlTags {
 			Arrays.asList(PropertiesReader.getValor("entidades.sem.tag.auditoria").split(","))
 	);
 	
-	private static List<String> listaInicioEntidadesParametrizador = new ArrayList<String>(
-			Arrays.asList(PropertiesReader.getValor("entidades.parametrizador").split(","))
-	);
-
 	/**
 	 * @param args
 	 * @throws Exception
@@ -265,7 +274,7 @@ public abstract class ValidationsXmlTags {
 			String nomeTabelaHbm = arquivoHbm.getName().replace(".hbm.xml", "");
 			String nomeTabelaHbmId = arquivoHbm.getName().replace(".hbm.xml", "").concat("Id");
 			String nomeFuncional = attrClassComp.getTextContent().replace(nomeTabelaHbmId,
-					"domain." + nomesFuncionaisMap.get(nomeTabelaHbm).concat("Id"));
+					"domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbm).concat("Id"));
 			attrClassComp.setTextContent(nomeFuncional);
 		}
 
@@ -307,13 +316,13 @@ public abstract class ValidationsXmlTags {
 		Node attrName = attrClass.getNamedItem("name");
 		String nomeTabelaHbm = arquivoHbm.getName().replace(".hbm.xml", "");
 
-		if (nomesFuncionaisMap.get(nomeTabelaHbm) == null) {
+		if (nomesFuncionaisGeralMap.get(nomeTabelaHbm) == null) {
 			throw new NomeFuncionalException(
 					"Parametro no arquivo properties para a tabela " + nomeTabelaHbm + " nao encontrado.");
 		}
 
 		String nomeFuncional = attrName.getTextContent().replace(nomeTabelaHbm,
-				"domain." + nomesFuncionaisMap.get(nomeTabelaHbm));
+				"domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbm));
 		attrName.setTextContent(nomeFuncional);
 
 		List<String> relationshipList = new ArrayList<String>(
@@ -328,9 +337,6 @@ public abstract class ValidationsXmlTags {
 	private static void alteracaoNomesFuncionaisRelacionamentosEntidades(Document doc, String relationship,Node classElement)
 			throws NomeFuncionalException {
 
-		//NamedNodeMap attrClass = classElement.getAttributes();
-		//Node attrTable = attrClass.getNamedItem("table");
-		
 		NodeList relationshipList = doc.getElementsByTagName(relationship);
 
 		for (int i = 0; i < relationshipList.getLength(); i++) {
@@ -346,20 +352,20 @@ public abstract class ValidationsXmlTags {
 			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1, nomeTabelaHbmoneToMany.length());
 			
-			/*if (listaInicioEntidadesParametrizador.contains(attrTable.getTextContent().substring(0, 3))) {
+			if(nomesFuncionaisParametrizadorMap.containsKey(nomeTabelaHbmoneToMany)) {
 				
 				String nomeTabela = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 				String nomePacote = nomeTabela.substring(0,nomeTabela.indexOf("."));
 				attrClas.setTextContent(attrClas.getTextContent().replace(nomePacote, "parametrizador"));
 				
-			}*/
-
-			if (nomesFuncionaisMap.get(nomeTabelaHbmoneToMany) == null) {
+			}
+			
+			if (nomesFuncionaisGeralMap.get(nomeTabelaHbmoneToMany) == null) {
 				throw new NomeFuncionalException(
 						"Parametro no arquivo properties para a tabela " + nomeTabelaHbmoneToMany + " nao encontrado.");
 			}
 
-			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain." + nomesFuncionaisMap.get(nomeTabelaHbmoneToMany));
+			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbmoneToMany));
 			attrClas.setTextContent(nomeFuncionaloneToMany);
 		}
 
