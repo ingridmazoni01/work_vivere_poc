@@ -9,6 +9,10 @@ import br.com.vivere.util.PropertiesReader;
 
 public abstract class EncondingChage {
 	
+	public static void main(String[] args) throws IOException {
+		change();
+	}
+	
 	public static void change() throws IOException {
 		
 		String diretorio = PropertiesReader.getValor("diretorio.hbm");

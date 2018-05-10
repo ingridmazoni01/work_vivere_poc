@@ -67,6 +67,10 @@ public abstract class ValidationsXmlTags {
 			Arrays.asList(PropertiesReader.getValor("entidades.sem.tag.auditoria").split(","))
 	);
 	
+	private static Boolean flagAlterarPacoteParametrizador = new Boolean(
+			PropertiesReader.getValor("alterar.pacote.entidades.parametrizador")
+	);
+	
 	/**
 	 * @param args
 	 * @throws Exception
@@ -352,7 +356,7 @@ public abstract class ValidationsXmlTags {
 			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1, nomeTabelaHbmoneToMany.length());
 			
-			if(nomesFuncionaisParametrizadorMap.containsKey(nomeTabelaHbmoneToMany)) {
+			if(flagAlterarPacoteParametrizador && nomesFuncionaisParametrizadorMap.containsKey(nomeTabelaHbmoneToMany)) {
 				
 				String nomeTabela = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
 				String nomePacote = nomeTabela.substring(0,nomeTabela.indexOf("."));
