@@ -4,7 +4,9 @@ public enum TipoDados {
 	
 	NAO_ENCONTRADO("",""),
 	SERIALIZABLE("serializable", "calendar"), 
-	FLOAT("float", "java.lang.Float")
+	FLOAT("float", "java.lang.Float"),
+	LONG("long", "java.lang.Long"),
+	INT("int", "java.lang.Integer")
 	
 	;
 

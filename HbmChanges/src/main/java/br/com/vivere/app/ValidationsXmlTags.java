@@ -285,30 +285,45 @@ public abstract class ValidationsXmlTags {
 	}// fim do metodo inserirTagsChaveComposta
 
 	private static void validacaoTipagemPropriedades(Document doc) {
-
-		NodeList propertyList = doc.getElementsByTagName("property");
-
-		for (int i = 0; i < propertyList.getLength(); i++) {
-
-			Node propertyElement = propertyList.item(i);
-
-			NamedNodeMap propertyMap = propertyElement.getAttributes();
-			Node attrType = propertyMap.getNamedItem("type");
-
-			switch (TipoDados.recuperarEnum(attrType.getTextContent())) {
-			case SERIALIZABLE:
-				attrType.setTextContent(TipoDados.SERIALIZABLE.getNomeReal());
-				break;
-
-			case FLOAT:
-				attrType.setTextContent(TipoDados.FLOAT.getNomeReal());
-				break;
-
-			default:
-				break;
+		
+		String camposXml [] = {"property","key-property"};
+		
+		for (String campoXml : camposXml) {
+			
+			NodeList propertyList = doc.getElementsByTagName(campoXml);
+			
+			for (int i = 0; i < propertyList.getLength(); i++) {
+				
+				Node propertyElement = propertyList.item(i);
+				
+				NamedNodeMap propertyMap = propertyElement.getAttributes();
+				Node attrType = propertyMap.getNamedItem("type");
+				
+				switch (TipoDados.recuperarEnum(attrType.getTextContent())) {
+				case SERIALIZABLE:
+					attrType.setTextContent(TipoDados.SERIALIZABLE.getNomeReal());
+					break;
+					
+				case FLOAT:
+					attrType.setTextContent(TipoDados.FLOAT.getNomeReal());
+					break;
+				
+				case LONG:
+					attrType.setTextContent(TipoDados.LONG.getNomeReal());
+					break;
+					
+				case INT:
+					attrType.setTextContent(TipoDados.INT.getNomeReal());
+					break;
+				
+				default:
+					break;
+				}
+				
 			}
-
+			
 		}
+		
 
 	}// fim do metodo validacaoTipagemPropriedades
 
