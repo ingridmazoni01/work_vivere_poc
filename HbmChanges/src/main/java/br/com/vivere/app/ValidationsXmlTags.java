@@ -32,14 +32,20 @@ public abstract class ValidationsXmlTags {
 
 	private static HashMap<String, String> nomesFuncionaisGeralMap = new HashMap<String, String>() {
 		{
-
-			Properties nomesFuncionaisProp = PropertiesReader.getFuncionalProp("nomes-funcionais.properties");
-			Set<String> keys = nomesFuncionaisProp.stringPropertyNames();
-
-			for (String key : keys) {
-				put(key, nomesFuncionaisProp.getProperty(key));
+			
+			List<String> listaModulosHbm = Arrays.asList(PropertiesReader.getValor("modulos.hbm").split(","));
+			
+			for (String modulo : listaModulosHbm) {
+				
+				Properties nomesFuncionaisProp = PropertiesReader.getFuncionalProp("nomes-funcionais-"+modulo+".properties");
+				Set<String> keys = nomesFuncionaisProp.stringPropertyNames();
+				
+				for (String key : keys) {
+					put(key, nomesFuncionaisProp.getProperty(key));
+				}
+				
 			}
-
+			
 		}
 	};
 	
@@ -56,20 +62,11 @@ public abstract class ValidationsXmlTags {
 		}
 	};
 
-	private static List<String> listaEntidadesSemSequence = new ArrayList<String>(
-			Arrays.asList(
-					PropertiesReader.getValor("entidades.sem.sequence.pr3").split(",")					
-			)
-			
-	);
-
-	private static List<String> listaEntidadesSemTagAuditoria = new ArrayList<String>(
-			Arrays.asList(PropertiesReader.getValor("entidades.sem.tag.auditoria").split(","))
-	);
-	
-	private static Boolean flagAlterarPacoteParametrizador = new Boolean(
-			PropertiesReader.getValor("alterar.pacote.entidades.parametrizador")
-	);
+	private static List<String> listaEntidadesSemSequence 		= Arrays.asList(PropertiesReader.getValor("entidades.sem.sequence.pr3").split(","));
+	private static List<String> listaEntidadesSemTagAuditoria 	= Arrays.asList(PropertiesReader.getValor("entidades.sem.tag.auditoria").split(","));
+	private static List<String> listaCamposFloatBigInteger 		= Arrays.asList(PropertiesReader.getValor("campos.float.biginteger").split(","));
+	private static Boolean flagAlterarPacoteParametrizador 		= new Boolean(PropertiesReader.getValor("alterar.pacote.entidades.parametrizador"));
+	private static String camposXml [] 							= PropertiesReader.getValor("validacao.tipagem.campos.xml").split(",");
 	
 	/**
 	 * @param args
@@ -286,8 +283,6 @@ public abstract class ValidationsXmlTags {
 
 	private static void validacaoTipagemPropriedades(Document doc) {
 		
-		String camposXml [] = {"property","key-property"};
-		
 		for (String campoXml : camposXml) {
 			
 			NodeList propertyList = doc.getElementsByTagName(campoXml);
@@ -305,7 +300,15 @@ public abstract class ValidationsXmlTags {
 					break;
 					
 				case FLOAT:
-					attrType.setTextContent(TipoDados.FLOAT.getNomeReal());
+					
+					Node attrNameType = propertyMap.getNamedItem("name");
+					
+					if(listaCamposFloatBigInteger.contains(attrNameType.getTextContent())) {
+						attrType.setTextContent(TipoDados.BIG_INTEGER.getNomeReal());
+					}else {
+						attrType.setTextContent(TipoDados.FLOAT.getNomeReal());
+					}
+					
 					break;
 				
 				case LONG:

@@ -6,7 +6,8 @@ public enum TipoDados {
 	SERIALIZABLE("serializable", "calendar"), 
 	FLOAT("float", "java.lang.Float"),
 	LONG("long", "java.lang.Long"),
-	INT("int", "java.lang.Integer")
+	INT("int", "java.lang.Integer"),
+	BIG_INTEGER("big_integer", "big_integer")
 	
 	;
 
