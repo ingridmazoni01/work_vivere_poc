@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -170,13 +171,13 @@ public abstract class ValidationsXmlTags {
 
 				if (childElement.getNodeName().equals("column")) {
 
-					Element metaIdNode = doc.createElement("meta_alterar");
+					Element metaIdNode = doc.createElement("meta");
 					metaIdNode.setTextContent("true");
 					Attr attIdAttribute = doc.createAttribute("attribute");
 					attIdAttribute.setValue("use-in-tostring");
 					metaIdNode.setAttributeNode(attIdAttribute);
 
-					Element metaId2Node = doc.createElement("meta_alterar");
+					Element metaId2Node = doc.createElement("meta");
 					metaId2Node.setTextContent("true");
 					Attr attId2Attribute = doc.createAttribute("attribute");
 					attId2Attribute.setValue("use-in-equals");
@@ -275,7 +276,7 @@ public abstract class ValidationsXmlTags {
 			String nomeTabelaHbm = arquivoHbm.getName().replace(".hbm.xml", "");
 			String nomeTabelaHbmId = arquivoHbm.getName().replace(".hbm.xml", "").concat("Id");
 			String nomeFuncional = attrClassComp.getTextContent().replace(nomeTabelaHbmId,
-					"domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbm).concat("Id"));
+					nomesFuncionaisGeralMap.get(nomeTabelaHbm).concat("Id"));
 			attrClassComp.setTextContent(nomeFuncional);
 		}
 
@@ -344,7 +345,7 @@ public abstract class ValidationsXmlTags {
 		}
 
 		String nomeFuncional = attrName.getTextContent().replace(nomeTabelaHbm,
-				"domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbm));
+				nomesFuncionaisGeralMap.get(nomeTabelaHbm));
 		attrName.setTextContent(nomeFuncional);
 
 		List<String> relationshipList = new ArrayList<String>(
@@ -371,7 +372,8 @@ public abstract class ValidationsXmlTags {
 			attrEmbed.setTextContent("false");
 			
 			Node attrClas = relationshipMap.getNamedItem("class");
-			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split("com.viverebrasil.app.")[1];
+			String nomeTabelaHbmoneToMany = attrClas.getTextContent().split(Pattern.quote("."))[5];
+			
 			nomeTabelaHbmoneToMany = nomeTabelaHbmoneToMany.substring(nomeTabelaHbmoneToMany.indexOf(".") + 1, nomeTabelaHbmoneToMany.length());
 			
 			if(flagAlterarPacoteParametrizador && nomesFuncionaisParametrizadorMap.containsKey(nomeTabelaHbmoneToMany)) {
@@ -387,7 +389,7 @@ public abstract class ValidationsXmlTags {
 						"Parametro no arquivo properties para a tabela " + nomeTabelaHbmoneToMany + " nao encontrado.");
 			}
 
-			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, "domain." + nomesFuncionaisGeralMap.get(nomeTabelaHbmoneToMany));
+			String nomeFuncionaloneToMany = attrClas.getTextContent().replace(nomeTabelaHbmoneToMany, nomesFuncionaisGeralMap.get(nomeTabelaHbmoneToMany));
 			attrClas.setTextContent(nomeFuncionaloneToMany);
 		}
 
